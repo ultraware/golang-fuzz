@@ -3,18 +3,21 @@ package {{.Name}}
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
 	"os"
 	"path"
 )
 
-func _GoFuzzBuildSaveCorpus(vals ...interface{}) {
+func _GoFuzzBuildSaveCorpus(vals ...any) {
 	var data []byte
 	for _, val := range vals {
 		switch v := val.(type) {
 		case string:
 			data = append(data, []byte(v)...)
+		case []byte:
+			data = append(data, v...)
 		default:
-			panic(`type not supported`)
+			panic(fmt.Sprintf(`%T not supported`, v))
 		}
 	}
 

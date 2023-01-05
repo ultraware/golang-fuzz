@@ -8,9 +8,9 @@ import (
 func FuzzReverse(f *testing.F) {
 	testcases := []string{"Hello, world", " ", "!12345"}
 	for _, tc := range testcases {
-		f.Add(tc, `abc`) // Use f.Add to provide a seed corpus
+		f.Add(tc, []byte(`abc`)) // Use f.Add to provide a seed corpus
 	}
-	f.Fuzz(func(t *testing.T, orig string, aaaa string) {
+	f.Fuzz(func(t *testing.T, orig string, aaaa []byte) {
 		rev, err1 := Reverse(orig)
 		if err1 != nil {
 			return //fuzz:rej

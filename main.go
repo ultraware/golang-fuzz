@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "embed"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -13,6 +12,8 @@ import (
 	"os/exec"
 	"strings"
 	"text/template"
+
+	_ "embed"
 )
 
 //go:embed tmpl/corpus.go.tmpl
