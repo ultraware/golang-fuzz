@@ -5,12 +5,22 @@ import (
 	"unicode/utf8"
 )
 
+var inited bool
+
+func init() {
+	inited = true
+}
+
 func FuzzReverse(f *testing.F) {
 	testcases := []string{"Hello, world", " ", "!12345"}
 	for _, tc := range testcases {
-		f.Add(tc, []byte(`abc`)) // Use f.Add to provide a seed corpus
+		f.Add(tc) // Use f.Add to provide a seed corpus
 	}
-	f.Fuzz(func(t *testing.T, orig string, aaaa []byte) {
+	f.Fuzz(func(t *testing.T, orig string) {
+		if inited != true {
+			panic(`not inited`)
+		}
+
 		rev, err1 := Reverse(orig)
 		if err1 != nil {
 			return //fuzz:rej
@@ -19,26 +29,16 @@ func FuzzReverse(f *testing.F) {
 		if err2 != nil {
 			return
 		}
-		if orig != doubleRev {
+		if !checkEqual(orig, doubleRev) {
 			t.Errorf("Before: %q, after: %q", orig, doubleRev)
 		}
 		if utf8.ValidString(orig) && !utf8.ValidString(rev) {
 			t.Errorf("Reverse produced invalid UTF-8 string %q", rev)
 		}
 		return //fuzz:prio
-		// data := []byte(orig + aaaa)
-		// hash := sha1.Sum(data)
-		// fileName := hex.EncodeToString(hash[:])
-
-		// f, err := os.OpenFile(path.Join(`corpus`, fileName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o644)
-		// if err != nil {
-		// 	panic(err)
-		// }
-		// defer f.Close()
-
-		// _, err = f.Write(data)
-		// if err != nil {
-		// 	panic(err)
-		// }
 	})
+}
+
+func checkEqual(a, b string) bool {
+	return a == b
 }
