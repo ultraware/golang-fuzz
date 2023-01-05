@@ -1,0 +1,33 @@
+package {{.Name}}
+
+import (
+	"crypto/sha1"
+	"encoding/hex"
+	"os"
+	"path"
+)
+
+func _GoFuzzBuildSaveCorpus(vals ...interface{}) {
+	var data []byte
+	for _, val := range vals {
+		switch v := val.(type) {
+		case string:
+			data = append(data, []byte(v)...)
+		default:
+			panic(`type not supported`)
+		}
+	}
+
+	hash := sha1.Sum(data)
+	fileName := hex.EncodeToString(hash[:])
+	f, err := os.OpenFile(path.Join("corpus", fileName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o644)
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+	_, err = f.Write(data)
+	if err != nil {
+		panic(err)
+	}
+}
