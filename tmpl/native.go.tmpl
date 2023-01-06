@@ -1,0 +1,32 @@
+package {{.PkgName}}
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func Fuzz{{.FuncName}}(f *testing.F) {
+	loadTestCases(f)
+	f.Fuzz(func(_ *testing.T, input {{.InputType}}) { Fuzz(input) })
+}
+
+func loadTestCases(f *testing.F) {
+	dir, err := os.ReadDir(`{{.CorpusDir}}`)
+	if err != nil {
+		f.Fatal(err)
+	}
+
+	for _, corpus := range dir {
+		if corpus.IsDir() {
+			continue
+		}
+
+		input, err := os.ReadFile(filepath.Join(`{{.CorpusDir}}`, corpus.Name()))
+		if err != nil {
+			f.Fatal(err)
+		}
+
+		f.Add({{.Input}})
+	}
+}
