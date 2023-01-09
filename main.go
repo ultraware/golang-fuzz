@@ -9,9 +9,15 @@ import (
 )
 
 var (
-	funcName  = flag.String("func", "Fuzz", "name of the Fuzz function")                  // TODO: Package main not supported by go-fuzz
-	corpusDir = flag.String("corpus", "corpus", "corpus directory for native Go fuzzing") // TODO: If not exists, show warning not adding any corpa
-	keepFile  = flag.Bool("keep", false, "keep generated fuzz file")                      // TODO: Always true for native
+	funcName  = flag.String("func", "Fuzz", "name of the Fuzz function")
+	corpusDir = flag.String("corpus", "corpus", "corpus directory for native Go fuzzing")
+	keepFile  = flag.Bool("keep", false, "keep generated fuzz file (always true for native)")
+
+	native    = flag.Bool("native", false, "generate native Go fuzzing test to run with go test -fuzz")
+	libfuzzer = flag.Bool("libfuzzer", false, "build for libFuzzer")
+	gofuzz    = flag.Bool("gofuzz", false, "build for go-fuzz")
+	afl       = flag.Bool("afl", false, "build for AFL++")
+	all       = flag.Bool("all", false, "build for all supported fuzzing engines")
 )
 
 func main() {
@@ -35,6 +41,12 @@ func main() {
 		fmt.Printf("Fuzz function %s not found in package %s\n", *funcName, packagePath)
 		os.Exit(1)
 	}
+
+	if pkg.Name == `main` && (*all || *gofuzz) {
+		fmt.Println(`Package main not supported by go-fuzz`)
+		os.Exit(1)
+	}
+
 	err := os.Chdir(packagePath)
 	if err != nil {
 		panic(err)
@@ -46,7 +58,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	generateGoNative(pkg.Name, fname, fuzzFunc)
-	buildLibfFuzzer(pkg.Name, fname, fuzzFunc)
-	buildGoFuzz(pkg.Name, fname, fuzzFunc)
+	if *all || *native {
+		generateGoNative(pkg.Name, fname, fuzzFunc)
+	}
+	if *all || *libfuzzer {
+		buildLibfFuzzer(pkg.Name, fname, fuzzFunc)
+	}
+	if *all || *gofuzz {
+		buildGoFuzz(pkg.Name, fname, fuzzFunc)
+	}
+	// if *all || *afl {
+	// 	buildAFL(pkg.Name, fname, fuzzFunc)
+	// }
 }

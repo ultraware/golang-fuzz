@@ -17,7 +17,7 @@ func {{.FuncName}}_(f *testing.F) {
 func loadTestCases(f *testing.F) {
 	dir, err := os.ReadDir(`{{.CorpusDir}}`)
 	if err != nil {
-		f.Fatal(err)
+		f.Fatal(err) // TODO: If not exists, show warning not adding any corpa
 	}
 
 	for _, corpus := range dir {
