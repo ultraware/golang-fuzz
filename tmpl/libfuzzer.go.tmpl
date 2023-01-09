@@ -1,0 +1,14 @@
+package {{.PkgName}}
+
+{{- range .Imports}}
+	import "{{.}}"
+{{- end}}
+
+func {{.FuncName}}_(input []byte) int {
+{{- if gt .InputLen 0}}
+	if len(input) != {{.InputLen}} {
+		return -1
+	}
+{{- end}}
+	 return {{.FuncName}}({{.InputCode}})
+}

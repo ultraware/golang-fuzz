@@ -1,1 +1,5 @@
 example/fuzz_test.go
+example/*.*.
+example/crash-*
+example/testdata
+example/libfuzzer

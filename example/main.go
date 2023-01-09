@@ -24,5 +24,9 @@ func Reverse(s string) (string, error) {
 	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
 		r[i], r[j] = r[j], r[i]
 	}
+	if len(s) == 100 && s[4:9] == `crash` { // Crash test case
+		r[0] = 'a'
+	}
+
 	return string(r), nil
 }

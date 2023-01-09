@@ -47,5 +47,5 @@ func main() {
 	}
 
 	generateGoNative(pkg.Name, fname, fuzzFunc)
-	// generateLibFuzzer(pkg.Name, fname, fuzzFunc)
+	buildLibfFuzzer(pkg.Name, fname, fuzzFunc)
 }
