@@ -13,7 +13,7 @@ func init() {
 	inited = true
 }
 
-func Fuzz(d []byte) int {
+func _Fuzz(d []byte) int {
 	if inited != true {
 		panic(`not inited`)
 	}

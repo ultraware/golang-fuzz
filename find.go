@@ -6,9 +6,10 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"strings"
 )
 
-func findFuzzFunc(packagePath, funcName string) (*ast.Package, string, *ast.File, *ast.FuncDecl) {
+func findFuzzFunc(packagePath, funcName string) (*ast.Package, string, *ast.FuncDecl) {
 	// Parse the Go package
 	fset := token.NewFileSet()
 	pkgs, err := parser.ParseDir(fset, packagePath, nil, parser.ParseComments)
@@ -20,14 +21,17 @@ func findFuzzFunc(packagePath, funcName string) (*ast.Package, string, *ast.File
 	// Find the Fuzz function in the package
 	for _, pkg := range pkgs {
 		for fname, file := range pkg.Files {
+			if strings.HasPrefix(fname, `_test.go`) {
+				continue
+			}
 			for _, decl := range file.Decls {
-				if funcDecl, ok := decl.(*ast.FuncDecl); ok && funcDecl.Name.Name == funcName {
-					return pkg, fname, file, funcDecl
+				if funcDecl, ok := decl.(*ast.FuncDecl); ok && strings.TrimPrefix(funcDecl.Name.Name, `_`) == funcName {
+					return pkg, fname, funcDecl
 				}
 			}
 		}
 	}
-	return nil, ``, nil, nil
+	return nil, ``, nil
 }
 
 func findFuzzCall(node ast.Node) *ast.CallExpr {

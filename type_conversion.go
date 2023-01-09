@@ -89,10 +89,3 @@ func getInputCode(inputType string) (string, int, []string) {
 
 	return inputCode, inputLen, imprts
 }
-
-func getCheckCode(inputLen int) string {
-	if inputLen == 0 {
-		return ``
-	}
-	return fmt.Sprintf(`if len(input) != %d { return -1 }`, inputLen)
-}

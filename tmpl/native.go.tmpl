@@ -12,9 +12,9 @@ import (
 {{- end}}
 )
 
-func Fuzz{{.FuncName}}(f *testing.F) {
+func {{.FuncName}}(f *testing.F) {
 	loadTestCases(f)
-	f.Fuzz(func(_ *testing.T, input {{.InputType}}) { Fuzz(input) })
+	f.Fuzz(func(_ *testing.T, input {{.InputType}}) { _{{.FuncName}}(input) })
 }
 
 func loadTestCases(f *testing.F) {
