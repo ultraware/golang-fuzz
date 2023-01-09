@@ -1,15 +1,12 @@
 package {{.PkgName}}
 
 import (
-{{- if gt .InputLen 0}}
-	"fmt"
+{{- range .Imports}}
+	"{{.}}"
 {{- end}}
 	"os"
 	"path/filepath"
 	"testing"
-{{- range .Imports}}
-	"{{.}}"
-{{- end}}
 )
 
 func {{.FuncName}}(f *testing.F) {
@@ -43,7 +40,7 @@ func loadTestCases(f *testing.F) {
 {{- if gt .InputLen 0}}
 func checkInputLength(input []byte) {
 	if len(input) != {{.InputLen}} {
-		panic(fmt.Sprintf(`invalid corpus: must be {{.InputLen}} bytes long for {{.InputType}} conversion`))
+		panic(`invalid corpus: must be {{.InputLen}} bytes long for {{.InputType}} conversion`)
 	}
 }
 {{- end}}

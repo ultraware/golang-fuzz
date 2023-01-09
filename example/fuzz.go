@@ -13,12 +13,11 @@ func init() {
 	inited = true
 }
 
-func _Fuzz(d []byte) int {
+func _Fuzz(orig string) int {
 	if inited != true {
 		panic(`not inited`)
 	}
 
-	orig := string(d)
 	rev, err1 := Reverse(orig)
 	if err1 != nil {
 		return -1
