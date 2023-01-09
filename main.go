@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
-	"go/ast"
 	"os"
 	"strings"
 	"unicode"
@@ -26,7 +24,6 @@ func main() {
 	}
 	packagePath := flag.Args()[0]
 
-	*funcName = strings.TrimPrefix(*funcName, `_`)
 	if !strings.HasPrefix(*funcName, `Fuzz`) || (*funcName != `Fuzz` && !unicode.IsUpper(rune((*funcName)[4]))) {
 		fmt.Printf("Fuzz function %s must be formatted as FuzzXxx\n", *funcName)
 		os.Exit(1)
@@ -43,8 +40,6 @@ func main() {
 		panic(err)
 	}
 
-	prefixFuzzFuncName(fname, fuzzFunc)
-
 	params := fuzzFunc.Type.Params.List
 	if len(params) != 1 { // TODO: Support multiple parameters
 		fmt.Printf("Fuzz function %s must only have one parameter\n", fname)
@@ -53,22 +48,4 @@ func main() {
 
 	generateGoNative(pkg.Name, fname, fuzzFunc)
 	// generateLibFuzzer(pkg.Name, fname, fuzzFunc)
-}
-
-func prefixFuzzFuncName(fname string, fuzzFunc *ast.FuncDecl) {
-	if strings.HasPrefix(fuzzFunc.Name.Name, `_`) {
-		fuzzFunc.Name.Name = strings.TrimPrefix(fuzzFunc.Name.Name, `_`)
-		return
-	}
-
-	b, err := os.ReadFile(fname)
-	if err != nil {
-		panic(err)
-	}
-
-	b = bytes.Replace(b, []byte(`func `+fuzzFunc.Name.Name), []byte(`func _`+fuzzFunc.Name.Name), 1)
-	err = os.WriteFile(fname, b, 0)
-	if err != nil {
-		panic(err)
-	}
 }

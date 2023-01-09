@@ -13,7 +13,7 @@ func init() {
 	inited = true
 }
 
-func _Fuzz(orig string) int {
+func Fuzz(orig string) int {
 	if inited != true {
 		panic(`not inited`)
 	}

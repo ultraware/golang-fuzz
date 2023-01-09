@@ -21,11 +21,11 @@ func findFuzzFunc(packagePath, funcName string) (*ast.Package, string, *ast.Func
 	// Find the Fuzz function in the package
 	for _, pkg := range pkgs {
 		for fname, file := range pkg.Files {
-			if strings.HasPrefix(fname, `_test.go`) {
+			if strings.HasSuffix(fname, `_test.go`) {
 				continue
 			}
 			for _, decl := range file.Decls {
-				if funcDecl, ok := decl.(*ast.FuncDecl); ok && strings.TrimPrefix(funcDecl.Name.Name, `_`) == funcName {
+				if funcDecl, ok := decl.(*ast.FuncDecl); ok && funcDecl.Name.Name == funcName {
 					return pkg, fname, funcDecl
 				}
 			}

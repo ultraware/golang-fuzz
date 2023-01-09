@@ -28,15 +28,7 @@ func generateGoNative(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 	}
 	defer fuzzFile.Close()
 
-	err = tmpl.Execute(fuzzFile, struct {
-		PkgName   string
-		Imports   []string
-		FuncName  string
-		CorpusDir string
-		InputType string
-		InputCode string
-		InputLen  int
-	}{
+	err = tmpl.Execute(fuzzFile, tmplData{
 		PkgName:   pkgName,
 		Imports:   imprts,
 		FuncName:  fuzzFunc.Name.Name,
