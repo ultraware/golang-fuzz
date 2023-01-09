@@ -36,7 +36,7 @@ func buildLibfFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 	defer os.Remove(libFileName)
 	defer os.Remove(libFileName[:len(libFileName)-1] + `h`)
 
-	fmt.Println(`go-libfuzz-build`, `-func`, funcName, `-o`, libFile.Name(), `.`)
+	// fmt.Println(`go-libfuzz-build`, `-func`, funcName, `-o`, libFile.Name(), `.`)
 	b, err := exec.Command(`go-libfuzz-build`, `-func`, funcName, `-o`, libFile.Name(), `.`).CombinedOutput()
 	if err != nil {
 		fmt.Println(string(b))

@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	funcName  = flag.String("func", "Fuzz", "name of the Fuzz function")
+	funcName  = flag.String("func", "Fuzz", "name of the Fuzz function")                  // TODO: Package main not supported by go-fuzz
 	corpusDir = flag.String("corpus", "corpus", "corpus directory for native Go fuzzing") // TODO: If not exists, show warning not adding any corpa
 	keepFile  = flag.Bool("keep", false, "keep generated fuzz file")                      // TODO: Always true for native
 )
@@ -48,4 +48,5 @@ func main() {
 
 	generateGoNative(pkg.Name, fname, fuzzFunc)
 	buildLibfFuzzer(pkg.Name, fname, fuzzFunc)
+	buildGoFuzz(pkg.Name, fname, fuzzFunc)
 }
