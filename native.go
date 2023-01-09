@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go/ast"
 	"os"
 	"strings"
@@ -19,28 +18,8 @@ func generateGoNative(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 		panic(err)
 	}
 
-	var input, inputType string // TODO: Move to functions, and support https://go.dev/security/fuzz/ types
-	switch t := fuzzFunc.Type.Params.List[0].Type.(type) {
-	case *ast.ArrayType:
-		if v, ok := t.Elt.(*ast.Ident); ok {
-			inputType = `[]` + v.Name
-		} else {
-			panic(fmt.Sprintf(`parameter ast type %T not supported`, t.Elt))
-		}
-	case *ast.Ident:
-		inputType = t.Name
-	default:
-		panic(fmt.Sprintf(`parameter ast type %T not supported`, t))
-	}
-
-	switch inputType {
-	case `[]byte`:
-		input = `input`
-	case `string`:
-		input = `string(input)`
-	default:
-		panic(fmt.Sprintf(`parameter type %s not supported`, inputType))
-	}
+	inputType := getInputType(fuzzFunc.Type.Params.List[0].Type)
+	inputCode, inputLen, imprts := getInputCode(inputType)
 
 	fname = strings.TrimSuffix(fname, `.go`) + `_test.go`
 	fuzzFile, err := os.OpenFile(fname, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o644)
@@ -51,16 +30,20 @@ func generateGoNative(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 
 	err = tmpl.Execute(fuzzFile, struct {
 		PkgName   string
+		Imports   []string
 		FuncName  string
 		CorpusDir string
 		InputType string
-		Input     string
+		InputCode string
+		InputLen  int
 	}{
 		PkgName:   pkgName,
+		Imports:   imprts,
 		FuncName:  fuzzFunc.Name.Name,
 		CorpusDir: *corpusDir,
 		InputType: inputType,
-		Input:     input,
+		InputCode: inputCode,
+		InputLen:  inputLen,
 	})
 	if err != nil {
 		panic(err)

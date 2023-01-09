@@ -16,7 +16,8 @@ func main() {
 	// Parse command line flags
 	flag.Parse()
 	if flag.NArg() == 0 || *funcName == "" {
-		fmt.Println("Usage: go-fuzz-build -func FUNC_NAME PACKAGE_PATH")
+		fmt.Println("Usage: go-fuzz-build [options] PACKAGE_PATH")
+		flag.PrintDefaults()
 		os.Exit(1)
 	}
 	packagePath := flag.Args()[0]

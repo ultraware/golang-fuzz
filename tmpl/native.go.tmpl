@@ -1,9 +1,15 @@
 package {{.PkgName}}
 
 import (
+{{- if gt .InputLen 0}}
+	"fmt"
+{{- end}}
 	"os"
 	"path/filepath"
 	"testing"
+{{- range .Imports}}
+	"{{.}}"
+{{- end}}
 )
 
 func Fuzz{{.FuncName}}(f *testing.F) {
@@ -27,6 +33,17 @@ func loadTestCases(f *testing.F) {
 			f.Fatal(err)
 		}
 
-		f.Add({{.Input}})
+{{- if gt .InputLen 0}}
+		checkInputLength(input)
+{{- end}}
+		f.Add({{.InputCode}})
 	}
 }
+
+{{- if gt .InputLen 0}}
+func checkInputLength(input []byte) {
+	if len(input) != {{.InputLen}} {
+		panic(fmt.Sprintf(`invalid corpus: must be {{.InputLen}} bytes long for {{.InputType}} conversion`))
+	}
+}
+{{- end}}
