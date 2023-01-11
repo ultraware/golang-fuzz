@@ -25,25 +25,18 @@ func buildLibfFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 		}
 	}
 
-	libFile, err := os.CreateTemp(`.`, `libfuzzer.*.a`)
-	if err == nil {
-		err = libFile.Close()
-	}
-	if err != nil {
-		panic(err)
-	}
-	libFileName := libFile.Name()
+	libFileName := createEmptyFile(`libfuzzer.*.a`)
 	defer os.Remove(libFileName)
 	defer os.Remove(libFileName[:len(libFileName)-1] + `h`)
 
 	// fmt.Println(`go-libfuzz-build`, `-func`, funcName, `-o`, libFile.Name(), `.`)
-	b, err := exec.Command(`go-libfuzz-build`, `-func`, funcName, `-o`, libFile.Name(), `.`).CombinedOutput()
+	b, err := exec.Command(`go-libfuzz-build`, `-func`, funcName, `-o`, libFileName, `.`).CombinedOutput()
 	if err != nil {
 		fmt.Println(string(b))
 		panic(err)
 	}
 
-	b, err = exec.Command(`clang`, `-fsanitize=fuzzer`, libFile.Name(), `-o`, `libfuzzer`).CombinedOutput()
+	b, err = exec.Command(`clang`, `-fsanitize=fuzzer`, libFileName, `-o`, `libfuzzer`).CombinedOutput()
 	if err != nil {
 		fmt.Println(string(b))
 		panic(err)
@@ -80,4 +73,16 @@ func generateLibFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) str
 	}
 
 	return fuzzFile.Name()
+}
+
+func createEmptyFile(pattern string) string {
+	tmpFile, err := os.CreateTemp(`.`, pattern)
+	if err == nil {
+		err = tmpFile.Close()
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	return tmpFile.Name()
 }

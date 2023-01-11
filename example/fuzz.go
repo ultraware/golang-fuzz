@@ -20,11 +20,11 @@ func Fuzz(orig string) int {
 
 	rev, err1 := Reverse(orig)
 	if err1 != nil {
-		return -1
+		return -1 // Reject; The input will not be added to the corpus. (libFuzzer, go-fuzz)
 	}
 	doubleRev, err2 := Reverse(rev)
 	if err2 != nil {
-		return 0
+		return 0 // Accept; The input may be added to the corpus.
 	}
 	if !checkEqual(orig, doubleRev) {
 		panic(fmt.Sprintf("Before: %q, after: %q", orig, doubleRev))
@@ -33,7 +33,7 @@ func Fuzz(orig string) int {
 		panic(fmt.Sprintf("Reverse produced invalid UTF-8 string %q", rev))
 	}
 
-	return 1
+	return 1 // Accept with priority; Increase priority of the given input. (go-fuzz)
 }
 
 func checkEqual(a, b string) bool {

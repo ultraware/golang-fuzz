@@ -9,7 +9,29 @@ A tool for generating/building fuzzing tests for various fuzzing engines without
 
 ## The Fuzz function
 
-First, create an exported fuzzing function formatted as `FuzzXxx`. Unlike native fuzzing functions, this function must NOT be placed in a test file (`_test.go`). The Fuzz function must only have one parameter. The parameter type must be supported by the native Go fuzzing engine (<https://go.dev/security/fuzz/>). See the example folder for an implementation example.
+In order to use `go-fuzz-build` to generate and build your fuzz tests, you will need to create an exported fuzzing function in your package. The name of this function should be formatted as `FuzzXxx`. 
+
+It is important to note that, unlike a native fuzzing function, this function should not be placed in a test file (`_test.go`) and should only have one parameter. This parameter should be a type that is supported by the native Go fuzzing engine (<https://go.dev/security/fuzz/>).
+
+A `Fuzz` function can be implemented as follows:
+
+```go
+func Fuzz(data []byte) int { // data can be any type supported by the native Go fuzzing engine
+    // Your test logic goes here
+    // ...
+
+    /*
+    The fuzz function should return an integer. This can be different than 0 to improve fuzzing performance.
+    Returning 0 means that the input is accepted and may be added to the corpus.
+    Returning -1 will cause libFuzzer or go-fuzz to not add that input to the corpus, regardless of coverage.
+    Returning 1 will cause go-fuzz to increase priority of the given input.
+    Fuzzing engines that do not support the returning value will treat it the same as returning 0.
+    */
+    return 0
+}
+```
+
+See the example folder for a fuzzing test example.
 
 ## Usage
 
@@ -19,7 +41,7 @@ To use go-fuzz-build, run the following command:
 go-fuzz-build [options] PACKAGE_PATH
 ```
 
-Where `PACKAGE_PATH` is the path to the Go package containing the Fuzz function to be tested.
+Where `PACKAGE_PATH` is the path to the Go package containing the Fuzz function.
 
 ## Options
 

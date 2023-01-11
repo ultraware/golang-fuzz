@@ -12,7 +12,7 @@ import (
 func findFuzzFunc(packagePath, funcName string) (*ast.Package, string, *ast.FuncDecl) {
 	// Parse the Go package
 	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, packagePath, nil, parser.ParseComments)
+	pkgs, err := parser.ParseDir(fset, packagePath, nil, 0)
 	if err != nil {
 		fmt.Printf("Error parsing package: %s\n", err)
 		os.Exit(1)
@@ -32,24 +32,4 @@ func findFuzzFunc(packagePath, funcName string) (*ast.Package, string, *ast.Func
 		}
 	}
 	return nil, ``, nil
-}
-
-func findFuzzCall(node ast.Node) *ast.CallExpr {
-	switch n := node.(type) {
-	case *ast.ExprStmt:
-		if call, ok := n.X.(*ast.CallExpr); ok {
-			if ident, ok := call.Fun.(*ast.SelectorExpr); ok && ident.Sel.Name == "Fuzz" { // TODO: check if called by *testing.F
-				return call
-			}
-		}
-	case *ast.FuncLit:
-		return findFuzzCall(n.Body)
-	case *ast.BlockStmt:
-		for _, stmt := range n.List {
-			if result := findFuzzCall(stmt); result != nil {
-				return result
-			}
-		}
-	}
-	return nil
 }
