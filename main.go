@@ -12,6 +12,7 @@ var (
 	funcName  = flag.String("func", "Fuzz", "name of the Fuzz function")
 	corpusDir = flag.String("corpus", "corpus", "corpus directory for native Go fuzzing")
 	keepFile  = flag.Bool("keep", false, "keep generated fuzz file (always true for native)")
+	printCmd  = flag.Bool("x", false, "print the commands")
 
 	native    = flag.Bool("native", false, "generate native Go fuzzing test to run with go test -fuzz")
 	libfuzzer = flag.Bool("libfuzzer", false, "build for libFuzzer")
@@ -43,23 +44,23 @@ func main() {
 	}
 
 	if *all || *native {
-		fmt.Println(`Generating Go native fuzzing test ...`)
+		fmt.Println("Generating Go native fuzzing test ...")
 		generateGoNative(pkg.Name, fname, fuzzFunc)
 	}
 	if *all || *libfuzzer {
-		fmt.Println(`Building libFuzzer binarty ...`)
+		fmt.Println("\nBuilding libFuzzer binarty ...")
 		buildLibfFuzzer(pkg.Name, fname, fuzzFunc)
 	}
 	if *all || *gofuzz {
 		if pkg.Name == `main` {
-			fmt.Println(`Package main not supported by go-fuzz`)
+			fmt.Println("\nPackage main not supported by go-fuzz")
 		} else {
-			fmt.Println(`Building go-fuzz binarty ...`)
+			fmt.Println("\nBuilding go-fuzz binarty ...")
 			buildGoFuzz(pkg.Name, fname, fuzzFunc)
 		}
 	}
 	if *all || *afl {
-		fmt.Println(`Building AFL++ binary ...`)
+		fmt.Println("\nBuilding AFL++ binary ...")
 		buildAFL(pkg.Name, fname, fuzzFunc)
 	}
 }
