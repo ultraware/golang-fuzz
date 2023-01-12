@@ -19,7 +19,12 @@ func {{.FuncName}}_(f *testing.F) {
 func loadTestCases(f *testing.F) {
 	dir, err := os.ReadDir(`{{.CorpusDir}}`)
 	if err != nil {
-		f.Fatal(err) // TODO: If not exists, show warning not adding any corpa
+		f.Logf(`Running without adding corpus: %s`, err)
+		return
+	}
+
+	if len(dir) == 0 {
+		f.Log(`Running without adding corpus: directory is empty`)
 	}
 
 	for _, corpus := range dir {
@@ -29,20 +34,24 @@ func loadTestCases(f *testing.F) {
 
 		input, err := os.ReadFile(filepath.Join(`{{.CorpusDir}}`, corpus.Name()))
 		if err != nil {
-			f.Fatal(err)
+			f.Logf(`Could not read corpus input %s: %s`, corpus.Name(), err)
 		}
 
 {{- if gt .InputLen 0}}
-		checkInputLength(input)
+		if checkInputLength(f, input) {
+			continue
+		}
 {{- end}}
 		f.Add({{.InputCode}})
 	}
 }
 
 {{- if gt .InputLen 0}}
-func checkInputLength(input []byte) {
+func checkInputLength(f *testing.F, input []byte) bool {
 	if len(input) != {{.InputLen}} {
-		panic(`invalid corpus: must be {{.InputLen}} bytes long for {{.InputType}} conversion`)
+		f.Error(`invalid corpus: must be {{.InputLen}} bytes long for {{.InputType}} conversion`)
+		return false
 	}
+	return true
 }
 {{- end}}
