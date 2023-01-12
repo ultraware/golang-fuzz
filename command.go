@@ -17,4 +17,8 @@ func command(name string, args ...string) {
 		_, _ = os.Stderr.Write(b)
 		panic(err)
 	}
+
+	if *verbose {
+		fmt.Println(string(b))
+	}
 }

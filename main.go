@@ -14,6 +14,7 @@ var (
 	keepFile   = flag.Bool("keep", false, "keep generated fuzz file (always true for native)")
 	printCmd   = flag.Bool("x", false, "print the commands")
 	outputFile = flag.String("o", "", "output file")
+	verbose    = flag.Bool("v", false, "show verbose output")
 
 	native    = flag.Bool("native", false, "generate native Go fuzzing test to run with go test -fuzz")
 	libfuzzer = flag.Bool("libfuzzer", false, "build for libFuzzer")
