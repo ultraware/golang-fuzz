@@ -50,14 +50,16 @@ The following options are available:
 - `-func`: the name of the Fuzz function (default: "Fuzz")
 - `-corpus`: the corpus directory for native Go fuzzing (default: "corpus")
 - `-keep`: keep generated fuzz file (always true for native)
+- `-x`: print the commands
+- `-o`: output file
 
 Fuzzing engines:
 
 - `-native`: generate native Go fuzzing test to run with go test -fuzz
-- `-libfuzzer`: build for libFuzzer
-- `-gofuzz`: build for go-fuzz
-- `-afl`: build for AFL++
-- `-all`: build for all supported fuzzing engines
+- `-libfuzzer`: build libFuzzer binary
+- `-gofuzz`: build go-fuzz binary
+- `-afl`: build AFL++ binary
+- `-all`: build all supported fuzzing engines
 
 ## Notes
 

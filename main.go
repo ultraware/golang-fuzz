@@ -9,10 +9,11 @@ import (
 )
 
 var (
-	funcName  = flag.String("func", "Fuzz", "name of the Fuzz function")
-	corpusDir = flag.String("corpus", "corpus", "corpus directory for native Go fuzzing")
-	keepFile  = flag.Bool("keep", false, "keep generated fuzz file (always true for native)")
-	printCmd  = flag.Bool("x", false, "print the commands")
+	funcName   = flag.String("func", "Fuzz", "name of the Fuzz function")
+	corpusDir  = flag.String("corpus", "corpus", "corpus directory for native Go fuzzing")
+	keepFile   = flag.Bool("keep", false, "keep generated fuzz file (always true for native)")
+	printCmd   = flag.Bool("x", false, "print the commands")
+	outputFile = flag.String("o", "", "output file")
 
 	native    = flag.Bool("native", false, "generate native Go fuzzing test to run with go test -fuzz")
 	libfuzzer = flag.Bool("libfuzzer", false, "build for libFuzzer")
@@ -67,7 +68,7 @@ func main() {
 
 func parseArgs() string {
 	flag.Parse()
-	if flag.NArg() == 0 || *funcName == "" {
+	if *funcName == "" {
 		fmt.Println("Usage: go-fuzz-build [options] PACKAGE_PATH")
 		flag.PrintDefaults()
 		os.Exit(1)
@@ -79,5 +80,13 @@ func parseArgs() string {
 		os.Exit(1)
 	}
 
+	if *outputFile != `` && *all {
+		fmt.Println(`Must specify a fuzzer when using -o`)
+		os.Exit(1)
+	}
+
+	if flag.NArg() == 0 {
+		return `.`
+	}
 	return flag.Args()[0]
 }
