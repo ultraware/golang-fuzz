@@ -10,6 +10,6 @@ func buildAFL(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 	if *outputFile != `` {
 		outFile = *outputFile
 	}
-
-	command(`go-afl-build`, `-func`, funcName, `-o`, outFile)
+	args := getBuildArgs(aflFlags, `-func`, funcName, `-o`, outFile)
+	command(`go-afl-build`, args...)
 }

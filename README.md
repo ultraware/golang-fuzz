@@ -52,6 +52,7 @@ The following options are available:
 - `-keep`: keep generated fuzz file (always true for native)
 - `-x`: print the commands
 - `-o`: output file
+- `-v`: show verbose output
 
 Fuzzing engines:
 
@@ -60,6 +61,14 @@ Fuzzing engines:
 - `-gofuzz`: build go-fuzz binary
 - `-afl`: build AFL++ binary
 - `-all`: build all supported fuzzing engines
+
+Build flag options:
+
+- `-listflags`: list build flags
+- `-libfuzzerflags`: additional go-libfuzz-build flags
+- `-gofuzzflags`: additional go-fuzz-build flags
+- `-aflflags`: additional go-afl-build flags
+- `-clangflags`: clang build flags (default: "-g -O1 -fsanitize=fuzzer")
 
 ## Notes
 

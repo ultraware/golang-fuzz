@@ -19,13 +19,15 @@ func buildLibfFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 	defer os.Remove(libFileName)                            //nolint: errcheck
 	defer os.Remove(libFileName[:len(libFileName)-1] + `h`) //nolint: errcheck
 
+	buildArgs := getBuildArgs(libfuzzerFlags, `-func`, funcName, `-o`, libFileName, `.`)
+	command(`go-libfuzz-build`, buildArgs...)
+
 	outFile := `libfuzzer`
 	if *outputFile != `` {
 		outFile = *outputFile
 	}
-
-	command(`go-libfuzz-build`, `-func`, funcName, `-o`, libFileName, `.`)
-	command(`clang`, `-g`, `-O1`, `-fsanitize=fuzzer`, libFileName, `-o`, outFile)
+	clangArgs := getBuildArgs(clangFlags, libFileName, `-o`, outFile)
+	command(`clang`, clangArgs...)
 }
 
 func generateLibFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) (string, func()) {
