@@ -14,7 +14,7 @@ func init() {
 }
 
 func Fuzz(orig string) int {
-	if inited != true {
+	if !inited {
 		panic(`not inited`)
 	}
 

@@ -1,4 +1,4 @@
-example/fuzz_test.go
+example/fuzz_gofuzzbuild_test.go
 example/*.*.
 example/reverse-fuzz.zip
 example/crash-*

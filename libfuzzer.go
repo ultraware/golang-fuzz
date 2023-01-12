@@ -1,12 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"go/ast"
 	"os"
-	"os/exec"
 	"strings"
-	"text/template"
 
 	_ "embed"
 )
@@ -15,64 +12,30 @@ import (
 var tmplLibFuzzer string
 
 func buildLibfFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
-	funcName := fuzzFunc.Name.Name
-	inputType := getInputType(fuzzFunc.Type.Params.List[0].Type)
-	if inputType != `[]byte` {
-		funcName += `_`
-		fuzzFile := generateLibFuzzer(pkgName, fname, fuzzFunc)
-		if !*keepFile {
-			defer os.Remove(fuzzFile)
-		}
-	}
+	funcName, cleanup := generateLibFuzzer(pkgName, fname, fuzzFunc)
+	defer cleanup()
 
 	libFileName := createEmptyFile(`libfuzzer.*.a`)
-	defer os.Remove(libFileName)
-	defer os.Remove(libFileName[:len(libFileName)-1] + `h`)
+	defer os.Remove(libFileName)                            //nolint: errcheck
+	defer os.Remove(libFileName[:len(libFileName)-1] + `h`) //nolint: errcheck
 
-	// fmt.Println(`go-libfuzz-build`, `-func`, funcName, `-o`, libFile.Name(), `.`)
-	b, err := exec.Command(`go-libfuzz-build`, `-func`, funcName, `-o`, libFileName, `.`).CombinedOutput()
-	if err != nil {
-		fmt.Println(string(b))
-		panic(err)
-	}
-
-	b, err = exec.Command(`clang`, `-fsanitize=fuzzer`, libFileName, `-o`, `libfuzzer`).CombinedOutput()
-	if err != nil {
-		fmt.Println(string(b))
-		panic(err)
-	}
+	command(`go-libfuzz-build`, `-func`, funcName, `-o`, libFileName, `.`)
+	command(`clang`, `-fsanitize=fuzzer`, libFileName, `-o`, `libfuzzer`)
 }
 
-// TODO: Fix dupl
-func generateLibFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) string {
-	tmpl, err := template.New(``).Parse(tmplLibFuzzer)
-	if err != nil {
-		panic(err)
-	}
-
+func generateLibFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) (string, func()) {
+	funcName := fuzzFunc.Name.Name
 	inputType := getInputType(fuzzFunc.Type.Params.List[0].Type)
-	inputCode, inputLen, imprts := getInputCode(inputType)
-
-	fuzzFile, err := os.CreateTemp(`.`, strings.TrimSuffix(fname, `.go`)+`.*.go`)
-	if err != nil {
-		panic(err)
-	}
-	defer fuzzFile.Close()
-
-	err = tmpl.Execute(fuzzFile, tmplData{
-		PkgName:   pkgName,
-		Imports:   imprts,
-		FuncName:  fuzzFunc.Name.Name,
-		CorpusDir: *corpusDir,
-		InputType: inputType,
-		InputCode: inputCode,
-		InputLen:  inputLen,
-	})
-	if err != nil {
-		panic(err)
+	if inputType == `[]byte` { // generate not necessary, can just use original file
+		return funcName, func() {}
 	}
 
-	return fuzzFile.Name()
+	cleanup := createTemplate(
+		tmplLibFuzzer, strings.TrimSuffix(fname, `.go`)+`.*.go`,
+		pkgName, funcName, inputType,
+	)
+
+	return funcName + `_`, cleanup
 }
 
 func createEmptyFile(pattern string) string {

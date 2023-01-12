@@ -1,0 +1,99 @@
+run:
+  deadline: 10m
+  build-tags: []
+  skip-dirs: []
+  skip-files: []
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - dupl
+    - errcheck
+    - errorlint
+    - exhaustive
+    - funlen
+    - goconst
+    - gocritic
+    - gocyclo
+    - goerr113
+    - gofumpt
+    - goimports
+    - revive
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - nolintlint
+    - prealloc
+    - exportloopref
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+
+linters-settings:
+  govet:
+    check-shadowing: true
+
+  gocyclo:
+    min-complexity: 15
+
+  dupl:
+    threshold: 50
+
+  lll:
+    line-length: 150
+    tab-width: 4
+
+  nakedret:
+    max-func-lines: 10
+
+  funlen:
+    lines: 50
+    statements: 40
+
+  revive:
+    rules:
+    - name: package-comments
+      disabled: true
+
+issues:
+  exclude: []
+  exclude-rules:
+    - linters:
+      - stylecheck
+      text: "ST1000:"
+    - linters:
+      - interfacer
+      text: "can be `fmt.Stringer`"
+    - path: _test.go
+      linters:
+        - lll
+        - funlen
+        - dupl
+    - linters:
+      - revive
+      text: "package-comments"
+    - linters:
+      - errcheck
+      source: "defer .*Rollback()"
+    - linters:
+      - errcheck
+      source: "defer .*Close()"
+  exclude-use-default: false
+  max-per-linter: 0
+  max-same-issues: 0

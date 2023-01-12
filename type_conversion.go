@@ -25,7 +25,7 @@ func getInputType(param ast.Expr) string {
 
 // Return a string which converts the input variable (of type []byte) to the given inputType
 // Supported types are Go native fuzzing types (https://go.dev/security/fuzz/)
-func getInputCode(inputType string) (string, int, []string) {
+func getInputCode(inputType string) (string, int, []string) { //nolint: funlen, gocyclo
 	var inputCode string
 	var inputLen int
 	var imprts []string

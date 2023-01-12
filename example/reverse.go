@@ -6,9 +6,11 @@ import (
 	"unicode/utf8"
 )
 
+var errInvalidInput = errors.New("input is not valid UTF-8")
+
 func Reverse(s string) (string, error) {
 	if !utf8.ValidString(s) {
-		return s, errors.New("input is not valid UTF-8")
+		return s, errInvalidInput
 	}
 	r := []rune(s)
 	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
