@@ -67,7 +67,7 @@ func main() {
 	if *all || *gofuzz {
 		buildGoFuzz(pkg.Name, fname, fuzzFunc)
 	}
-	// if *all || *afl {
-	// 	buildAFL(pkg.Name, fname, fuzzFunc)
-	// }
+	if *all || *afl {
+		buildAFL(pkg.Name, fname, fuzzFunc)
+	}
 }
