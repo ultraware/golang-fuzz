@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	_ "embed"
+
+	"golang.org/x/exp/slices"
 )
 
 //go:embed tmpl/libfuzzer.go.tmpl
@@ -22,11 +24,7 @@ func buildLibfFuzzer(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 	buildArgs := getBuildArgs(libfuzzerFlags, `-func`, funcName, `-o`, libFileName, `.`)
 	command(`go-libfuzz-build`, buildArgs...)
 
-	outFile := `libfuzzer`
-	if *outputFile != `` {
-		outFile = *outputFile
-	}
-	clangArgs := getBuildArgs(clangFlags, libFileName, `-o`, outFile)
+	clangArgs := getBuildArgs(clangFlags, libFileName, `-o`, getOutputFile(`libfuzzer`))
 	command(`clang`, clangArgs...)
 }
 
@@ -55,4 +53,12 @@ func createEmptyFile(pattern string) string {
 	}
 
 	return tmpFile.Name()
+}
+
+func runLibFuzzer(args []string) {
+	valid, dir := isValidCorpusDir()
+	if valid && !slices.Contains(args, dir.Name()) {
+		args = append(args, dir.Name())
+	}
+	execute(false, getOutputFile(`libfuzzer`), args...)
 }

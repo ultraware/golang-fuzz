@@ -1,6 +1,6 @@
 # go-fuzz-build
 
-A tool for generating/building fuzzing tests for various fuzzing engines without having to implement different types of Fuzz functions. The following fuzzing engines are supported:
+A tool for generating, building and running fuzzing tests for various fuzzing engines without having to implement different types of Fuzz functions. The following fuzzing engines are supported:
 
 - [Go native fuzzing engine](https://go.dev/security/fuzz/) (`go test -fuzz`)
 - [dvyukov's go-fuzz](https://github.com/dvyukov/go-fuzz) using go-fuzz-build
@@ -38,7 +38,7 @@ See the example folder for a fuzzing test example.
 To use go-fuzz-build, run the following command:
 
 ```
-go-fuzz-build [options] PACKAGE_PATH
+go-fuzz-build [options] PACKAGE_PATH [run_args]
 ```
 
 Where `PACKAGE_PATH` is the path to the Go package containing the Fuzz function.
@@ -48,7 +48,7 @@ Where `PACKAGE_PATH` is the path to the Go package containing the Fuzz function.
 The following options are available:
 
 - `-func`: the name of the Fuzz function (default: "Fuzz")
-- `-corpus`: the corpus directory for native Go fuzzing (default: "corpus")
+- `-corpus`: the corpus directory (optional) (default: "corpus")
 - `-keep`: keep generated fuzz file (always true for native)
 - `-x`: print the commands
 - `-o`: output file
@@ -61,6 +61,7 @@ Fuzzing engines:
 - `-gofuzz`: build go-fuzz binary
 - `-afl`: build AFL++ binary
 - `-all`: build all supported fuzzing engines
+- `-run`: run fuzzer after building
 
 Build flag options:
 

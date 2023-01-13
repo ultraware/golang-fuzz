@@ -13,13 +13,15 @@ var tmplNative string
 func generateGoNative(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 	inputType := getInputType(fuzzFunc.Type.Params.List[0].Type)
 
-	outFile := *outputFile
-	if outFile == `` {
-		outFile = strings.TrimSuffix(fname, `.go`) + `_gofuzzbuild_test.go`
-	}
+	defaultOutputFile := strings.TrimSuffix(fname, `.go`) + `_gofuzzbuild_test.go`
 
 	_ = createTemplate(
-		tmplNative, outFile,
+		tmplNative, getOutputFile(defaultOutputFile),
 		pkgName, fuzzFunc.Name.Name, inputType,
 	)
+}
+
+func runGoNative(pkgName string, fname string, fuzzFunc *ast.FuncDecl, args []string) {
+	args = append([]string{`test`, `-fuzz`, fuzzFunc.Name.Name + `_`}, args...)
+	execute(true, `go`, args...)
 }
