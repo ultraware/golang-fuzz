@@ -11,7 +11,7 @@ A tool for generating, building and running fuzzing tests for various fuzzing en
 
 In order to use `go-fuzz-build` to generate and build your fuzz tests, you will need to create an exported fuzzing function in your package. The name of this function should be formatted as `FuzzXxx`. 
 
-It is important to note that, unlike a native fuzzing function, this function should not be placed in a test file (`_test.go`) and should only have one parameter. This parameter should be a type that is supported by the native Go fuzzing engine (<https://go.dev/security/fuzz/>).
+Note that, unlike a native fuzzing function, this function should not be placed in a test file (`_test.go`) and should only have one parameter. This parameter should be a type that is supported by the native Go fuzzing engine (<https://go.dev/security/fuzz/>).
 
 A `Fuzz` function can be implemented as follows:
 
@@ -48,6 +48,7 @@ Where `PACKAGE_PATH` is the path to the Go package containing the Fuzz function.
 The following options are available:
 
 - `-func`: the name of the Fuzz function (default: "Fuzz")
+- `-run`: run fuzzer after building
 - `-corpus`: the corpus directory (optional) (default: "corpus")
 - `-keep`: keep generated fuzz file (always true for native)
 - `-x`: print the commands
@@ -61,15 +62,12 @@ Fuzzing engines:
 - `-gofuzz`: build go-fuzz binary
 - `-afl`: build AFL++ binary
 - `-all`: build all supported fuzzing engines
-- `-run`: run fuzzer after building
 
 Build flag options:
 
-- `-listflags`: list build flags
-- `-libfuzzerflags`: additional go-libfuzz-build flags
-- `-gofuzzflags`: additional go-fuzz-build flags
-- `-aflflags`: additional go-afl-build flags
-- `-clangflags`: clang build flags (default: "-g -O1 -fsanitize=fuzzer")
+- `-<fuzzer>.list`: list build flags
+- `-<fuzzer>.flags`: additional build flags
+- `-libfuzzer.clangflags`: clang build flags (default: "-g -O1 -fsanitize=fuzzer")
 
 ## Notes
 

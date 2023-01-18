@@ -1,32 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"go/ast"
 	"os"
-)
-
-var (
-	funcName   = flag.String("func", "Fuzz", "name of the Fuzz function")
-	corpusDir  = flag.String("corpus", "corpus", "corpus directory (optional)")
-	keepFile   = flag.Bool("keep", false, "keep generated fuzz file (always true for native)")
-	printCmd   = flag.Bool("x", false, "print the commands")
-	outputFile = flag.String("o", "", "output file")
-	verbose    = flag.Bool("v", false, "show verbose output")
-
-	native    = flag.Bool("native", false, "generate native Go fuzzing test to run with go test -fuzz")
-	libfuzzer = flag.Bool("libfuzzer", false, "build for libFuzzer")
-	gofuzz    = flag.Bool("gofuzz", false, "build for go-fuzz")
-	afl       = flag.Bool("afl", false, "build for AFL++")
-	all       = flag.Bool("all", false, "build for all supported fuzzing engines")
-	runFuzzer = flag.Bool("run", false, "run fuzzer after building")
-
-	listFlags      = flag.Bool("listflags", false, "list build flags")
-	libfuzzerFlags = flag.String("libfuzzerflags", "", "additional go-libfuzz-build flags")
-	gofuzzFlags    = flag.String("gofuzzflags", "", "additional go-fuzz-build flags")
-	aflFlags       = flag.String("aflflags", "", "additional go-afl-build flags")
-	clangFlags     = flag.String("clangflags", "-g -O1 -fsanitize=fuzzer", "clang build flags")
 )
 
 func main() {
