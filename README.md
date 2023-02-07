@@ -1,6 +1,6 @@
-# go-fuzz-build
+# golang-fuzz
 
-A tool for generating, building and running fuzzing tests for various fuzzing engines without having to implement different types of Fuzz functions. The following fuzzing engines are supported:
+A tool for generating, building and running fuzzing tests for various fuzzing engines using a standard format. No need to implement different types of Fuzz functions. The following fuzzing engines are supported:
 
 - [Go native fuzzing engine](https://go.dev/security/fuzz/) (`go test -fuzz`)
 - [dvyukov's go-fuzz](https://github.com/dvyukov/go-fuzz) using go-fuzz-build
@@ -9,7 +9,7 @@ A tool for generating, building and running fuzzing tests for various fuzzing en
 
 ## The Fuzz function
 
-In order to use `go-fuzz-build` to generate and build your fuzz tests, you will need to create an exported fuzzing function in your package. The name of this function should be formatted as `FuzzXxx`. 
+In order to use `golang-fuzz` to generate and build your fuzz tests, you will need to create an exported fuzzing function in your package. The name of this function should be formatted as `FuzzXxx`.
 
 Note that, unlike a native fuzzing function, this function should not be placed in a test file (`_test.go`) and should only have one parameter. This parameter should be a type that is supported by the native Go fuzzing engine (<https://go.dev/security/fuzz/>).
 
@@ -35,10 +35,10 @@ See the example folder for a fuzzing test example.
 
 ## Usage
 
-To use go-fuzz-build, run the following command:
+To use golang-fuzz, run the following command:
 
 ```
-go-fuzz-build [options] PACKAGE_PATH [run_args]
+golang-fuzz [options] PACKAGE_PATH [run_args]
 ```
 
 Where `PACKAGE_PATH` is the path to the Go package containing the Fuzz function.

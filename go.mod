@@ -1,4 +1,4 @@
-module go-fuzz-build
+module github.com/ultraware/golang-fuzz
 
 go 1.19
 

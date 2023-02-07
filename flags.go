@@ -25,8 +25,8 @@ var (
 	clangFlags     = flag.String("libfuzzer.clangflags", "-g -O1 -fsanitize=fuzzer", "clang build flags")
 
 	gofuzz      = flag.Bool("gofuzz", false, "build for go-fuzz")
-	gofuzzFlags = flag.String("gofuzz.flags", "", "additional go-fuzz-build flags")
-	gofuzzList  = flag.Bool("gofuzz.list", false, "list go-fuzz-build flags")
+	gofuzzFlags = flag.String("gofuzz.flags", "", "additional golang-fuzz flags")
+	gofuzzList  = flag.Bool("gofuzz.list", false, "list golang-fuzz flags")
 
 	afl      = flag.Bool("afl", false, "build for AFL++")
 	aflFlags = flag.String("afl.flags", "", "additional go-afl-build flags")
@@ -47,7 +47,7 @@ func parseArgs() []string {
 	checkOneFuzzerFlag(`-o`, *outputFile != ``)
 
 	if *funcName == "" {
-		fmt.Println("Usage: go-fuzz-build [options] PACKAGE_PATH [run_args]")
+		fmt.Println("Usage: golang-fuzz [options] PACKAGE_PATH [run_args]")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -70,7 +70,7 @@ func listBuildFlags() {
 		command(`go-libfuzz-build`, `-help`)
 	}
 	if *gofuzzList {
-		command(`go-fuzz-build`, `-help`)
+		command(`golang-fuzz`, `-help`)
 	}
 	if *aflList {
 		command(`go-afl-build`, `-help`)

@@ -14,7 +14,7 @@ func buildGoFuzz(pkgName string, fname string, fuzzFunc *ast.FuncDecl) {
 	}
 
 	command(`go`, `get`, `-u`, `github.com/dvyukov/go-fuzz/go-fuzz-dep`)
-	command(`go-fuzz-build`, args...)
+	command(`golang-fuzz`, args...)
 }
 
 func runGoFuzz(args []string) {
