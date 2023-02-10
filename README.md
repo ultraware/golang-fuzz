@@ -1,6 +1,6 @@
 # golang-fuzz
 
-A tool for generating, building and running fuzzing tests for various fuzzing engines using a standard format. No need to implement different types of Fuzz functions. The following fuzzing engines are supported:
+A tool for generating, building and running fuzzing tests for various fuzzing engines using a standard format, without affecting fuzzing performance. No need to implement different types of Fuzz functions. The following fuzzing engines are supported:
 
 - [Go native fuzzing engine](https://go.dev/security/fuzz/) (`go test -fuzz`)
 - [dvyukov's go-fuzz](https://github.com/dvyukov/go-fuzz) using go-fuzz-build
