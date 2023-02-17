@@ -40,14 +40,14 @@ func build(pkgName, fname string, fuzzFunc *ast.FuncDecl) {
 		generateGoNative(pkgName, fname, fuzzFunc)
 	}
 	if *all || *libfuzzer {
-		fmt.Println("\nBuilding libFuzzer binarty ...")
+		fmt.Println("\nBuilding libFuzzer binary ...")
 		buildLibfFuzzer(pkgName, fname, fuzzFunc)
 	}
 	if *all || *gofuzz {
 		if pkgName == `main` {
 			fmt.Println("\nPackage main not supported by go-fuzz")
 		} else {
-			fmt.Println("\nBuilding go-fuzz binarty ...")
+			fmt.Println("\nBuilding go-fuzz binary ...")
 			buildGoFuzz(pkgName, fname, fuzzFunc)
 		}
 	}
