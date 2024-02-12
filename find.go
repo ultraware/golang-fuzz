@@ -6,6 +6,7 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -26,7 +27,7 @@ func findFuzzFunc(packagePath, funcName string) (*ast.Package, string, *ast.Func
 			}
 			for _, decl := range file.Decls {
 				if funcDecl, ok := decl.(*ast.FuncDecl); ok && funcDecl.Name.Name == funcName {
-					return pkg, fname, funcDecl
+					return pkg, filepath.Base(fname), funcDecl
 				}
 			}
 		}
